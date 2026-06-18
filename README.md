@@ -5,6 +5,15 @@ dockerized api for providing name and faculty based professor queriesn for the h
 - dotnet10.0 or higher
 # build and run
 
+
+## docker pull
+```
+docker pull ghcr.io/finnimon/wbmcs-api:latest
+docker run -p 8080:8080 ghcr.io/finnimon/wbmcs-api:latest
+
+```
+hosted at http://localhost:8080
+
 ## non docker
 ```bash
 cd $sln_dir
@@ -21,6 +30,7 @@ docker run -p 8080:8080 wb-api .
 
 ```
 hosted at http://localhost:8080
+
 
 # Endpoints
 
