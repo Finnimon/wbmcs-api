@@ -2,7 +2,7 @@
 dockerized api for providing name and faculty based professor queriesn for the hsb
 # requirements
 - docker
-- dotnet10.0 or higher
+- dotnet10.0 or higher (local build only)
 # build and run
 
 
