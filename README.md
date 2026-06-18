@@ -1,6 +1,10 @@
 # Intro
 dockerized api for providing name and faculty based professor queriesn for the hsb
 
+# run docker
+```bash
+docker run -p 8080:8080 ${{container name}}
+```
 # Endpoints
 
 ## http GET
