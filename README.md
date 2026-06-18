@@ -1,10 +1,27 @@
 # Intro
 dockerized api for providing name and faculty based professor queriesn for the hsb
+# requirements
+- docker
+- dotnet10.0 or higher
+# build and run
 
-# run docker
+## non docker
 ```bash
-docker run -p 8080:8080 ${{container name}}
+cd $sln_dir
+dotnet restore 
+dotnet build
+dotnet run --project ./Wbmcs.Api/Wbmcs.Api.csproj
 ```
+hosted at https://localhost:5131
+
+## docker
+```bash
+docker build -t wb-api .
+docker run -p 8080:8080 wb-api .
+
+```
+hosted at http://localhost:8080
+
 # Endpoints
 
 ## http GET
@@ -74,7 +91,39 @@ response (example):
   },...
 ]
 ```
+## Query professors by name and faculty
+faculty and name are optional. faculty must match a faculty name from /professors/faculties exactly. whitespace and " are trimmed. also published as POST endpoint
 
+```http
+GET http://localhost:8080/professors/search?faculty=&name=
+```
+
+response for 
+```http
+GET http://localhost:8080/professors/search?name=d kampn
+```
+:
+```json
+[
+  {
+    "title": "Prof. Dr.-Ing. Dennis Kampen",
+    "isProfessor": true,
+    "position": null,
+    "email": "Dennis.Kampen@hs-bremen.de",
+    "phone": "+49 421 5905 5420",
+    "mobile": null,
+    "image": {
+      "src": "/assets/hsb/de/_processed_/d/7/csm_Kampen_Dennis-07779-1200px_f66293ee45.jpg",
+      "alt": "Auf dem Bild ist Dennis Kampen zu sehen. Er trägt kurzes blondes Haar und ein weißes Hemd mit dunklem Sakko. ",
+      "title": "Dennis Kampen"
+    },
+    "url": "/person/dekampen/",
+    "faculty": [
+      "Fakultät Elektrotechnik und Informatik"
+    ]
+  }
+]
+```
 ## http POST
 ## Query professors by name and faculty
 faculty and name are optional. faculty must match a faculty name from /professors/faculties exactly. whitespace and " are trimmed.

@@ -1,12 +1,13 @@
-@Wbmcs.Api_HostAddress = http://localhost:8080
+@Wbmcs.Api_HostAddress = http://localhost:5131
 
-
-GET {{Wbmcs.Api_HostAddress}}/professors/
+### Get all professors
+GET {{Wbmcs.Api_HostAddress}}/professors
 Accept: application/json
 
-###
-
-POST {{Wbmcs.Api_HostAddress}}/professors/search?faculty=&name=
+### Search professors via POST
+POST {{Wbmcs.Api_HostAddress}}/professors/search?faculty=CS&name=Smith
 Accept: application/json
 
-###
+### Search professors via GET
+GET {{Wbmcs.Api_HostAddress}}/professors/search?faculty=CS&name=Smith
+Accept: application/json

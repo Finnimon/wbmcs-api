@@ -53,15 +53,21 @@ public sealed class ProfessorsController : ControllerBase
         return Ok(data.Professors.Count);
     }
 
+    [HttpGet("search/")]
+    public Task<IActionResult> SearchProfessorsGet([FromQuery] string? faculty, [FromQuery] string? name)
+        => SearchProfessorsInternal(faculty, name);
+
     [HttpPost("search/")]
-    public Task<IActionResult> SearchProfessors([FromQuery] string? faculty, [FromQuery] string? name) =>
+    public Task<IActionResult> SearchProfessorsPost([FromQuery] string? faculty, [FromQuery] string? name)
+        => SearchProfessorsInternal(faculty, name);
+
+    private Task<IActionResult> SearchProfessorsInternal(string? faculty, string? name) =>
         (faculty, name) switch
         {
-            (null, null) => Get(),
-            (not null, null) => GetFacultyMembers(faculty.Trim(_trimChars)),
+            (not { Length: > 0 }, not { Length: > 0 }) => Get(),
+            ({ Length: > 0 }, not { Length: > 0 }) => GetFacultyMembers(faculty.Trim(_trimChars)),
             _ => DoSearch(faculty?.Trim(_trimChars), name.Trim(_trimChars))
         };
-
     private async Task<IActionResult> DoSearch(string? faculty, string name)
     {
         var data = await GetCachedData();
@@ -81,15 +87,27 @@ public sealed class ProfessorsController : ControllerBase
             IReadOnlyList<EmployeePost.Data> Professors,
             IReadOnlyDictionary<string, List<EmployeePost.Data>> ByFaculty);
 
+        private static readonly Lock s_monitor = new();
         [field: AllowNull, MaybeNull]
-        public static Cache Instance => field ??= new Cache();
+        public static Cache Instance
+        {
+            get
+            {
+                if (field is not null) return field;
+                lock (s_monitor)
+                {
+                    if (field is not null) return field;
+                    return field = new Cache();
+                }
+            }
+        }
 
         private Cache()
         {
             _professors = [];
             _byFaculty = new Dictionary<string, List<EmployeePost.Data>>(StringComparer.OrdinalIgnoreCase);
-            _=new Timer(Reload, null, new TimeSpan(0, 0, 0, 0), new TimeSpan(1, 0, 0));
-            Thread.Sleep(1000);
+            _ = new Timer(Reload, null, new TimeSpan(0, 1, 0, 0), new TimeSpan(1, 0, 0));
+            Reload(null);
         }
 
         public async ValueTask<Data> Unlock()
@@ -105,7 +123,7 @@ public sealed class ProfessorsController : ControllerBase
 
         private void Reload(object? _)
         {
-            var entered = Monitor.TryEnter(this);
+            var entered = System.Threading.Monitor.TryEnter(this);
             TaskCompletionSource s = new();
             _running = s.Task;
             try
@@ -137,7 +155,7 @@ public sealed class ProfessorsController : ControllerBase
             {
                 s.SetResult();
                 _running = null;
-                if (entered) Monitor.Exit(this);
+                if (entered) System.Threading.Monitor.Exit(this);
             }
         }
 
