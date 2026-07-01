@@ -1,6 +1,6 @@
 ﻿namespace Wbmcs.Model;
 
-public static class SearchEngine
+public static class StringSearchEngine
 {
     public static IOrderedEnumerable<T> FuzzyLev<T>(IEnumerable<T> src, Func<T, string> keyGen, string search)
     {

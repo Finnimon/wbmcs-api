@@ -75,7 +75,7 @@ public sealed class ProfessorsController : ControllerBase
         return !data.ByFaculty.TryGetValue(faculty, out var profs) ? Empty : SearchByName(name, profs);
     }
 
-    public IActionResult SearchByName(string name, IEnumerable<EmployeePost.Data> professors) => Ok(SearchEngine.FuzzyLev(professors, prof => prof.Title, name));
+    public IActionResult SearchByName(string name, IEnumerable<EmployeePost.Data> professors) => Ok(StringSearchEngine.FuzzyLev(professors, prof => prof.Title, name));
 
     private sealed class Cache
     {

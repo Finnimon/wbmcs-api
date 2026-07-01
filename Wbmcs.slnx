@@ -3,5 +3,6 @@
     <File Path="README.md" />
   </Folder>
   <Project Path="Wbmcs.Api/Wbmcs.Api.csproj" />
+  <Project Path="Wbmcs.Db/Wbmcs.Db.csproj" Id="f10a439a-5115-467a-817e-d88ae12996b5" />
   <Project Path="Wbmcs.Model/Wbmcs.Model.csproj" />
 </Solution>
